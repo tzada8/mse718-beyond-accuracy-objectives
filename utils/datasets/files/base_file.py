@@ -59,6 +59,23 @@ class BaseFile:
         self.output_headers = output_headers
 
 
+    @classmethod
+    def combine(cls, files: list["BaseFile"]) -> "BaseFile":
+        """
+        Combines a list of same type file objects into a single file object.
+        Note that BaseFile objects cannot be combined.
+
+        Args:
+            files (list[BaseFile]): The list of files to combine.
+
+        Returns:
+            BaseFile: The combined file objects.
+        """
+        dfs = [f.df for f in files]
+        combined_df = pd.concat(dfs, ignore_index=True)
+        return cls(df=combined_df)
+
+
     def save(self, path: str):
         """
         Saves the run at the specified file path.

@@ -6,6 +6,7 @@ from typing import Optional
 from tqdm import tqdm
 
 from ..files.run_file import RunFile
+from ..files.measure_file import MeasureFile
 from utils.objectives.distance import Distance
 
 
@@ -75,6 +76,29 @@ class RunFolder:
             for run in tqdm(self.runs)
         ]
         return RunFolder(runs=reranked_runs)
+
+
+    def evaluate(
+        self, measure: str, k: int, distance: Distance, user_ids: set[int],
+    ) -> MeasureFile:
+        """
+        Evaluates all RunFiles in the RunFolder.
+
+        Args:
+            measure (str): The type of measure for evaluation.
+            k (int): Number of recommendations to measure.
+            distance (Distance): Defines how item distances are measured.
+            user_ids (set[int]): Set of all users.
+
+        Returns:
+            MeasureFile: The measured results across all runs.
+        """
+        logger.info(f"Measuring top {k} items per user for {measure}")
+        measured_runs = [
+            run.evaluate(measure, k, distance, user_ids)
+            for run in tqdm(self.runs)
+        ]
+        return MeasureFile.combine(measured_runs)
 
 
     def save(self, path: str):

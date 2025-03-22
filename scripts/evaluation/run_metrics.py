@@ -1,18 +1,16 @@
-import pathlib
-
-from tqdm import tqdm
-
 from utils.datasets.files.rating_file import RatingFile
-from utils.datasets.files.run_file import RunFile
 from utils.datasets.files.user_ids_file import UserIdsFile
+from utils.datasets.folders.run_folder import RunFolder
 from utils.interface.arguments import Arguments
+import utils.interface.logging_config
 from utils.objectives.distance import Distance
 
 
 fields = {
     "description": "Evaluates specified metric across runs",
+    "example_usage": "python -m scripts.evaluation.run_metrics --runs results/runs-reranked --input data/ratings.csv --users data/user_ids.txt --output results/metrics/metrics.txt --metric novelty --k 100",
     "args": [
-        {"name": "--runs", "type": str, "description": "The runs input directory"},
+        {"name": "--runs", "type": str, "description": "The runs input directory or file"},
         {"name": "--input", "type": str, "description": "The movie ratings file"},
         {"name": "--users", "type": str, "description": "The list of users file"},
         {"name": "--output", "type": str, "description": "The metric runs output file"},
@@ -27,23 +25,11 @@ def main(args):
 
     user_ids = UserIdsFile(args.users).user_ids
 
-    results = None
-    for run in tqdm(pathlib.Path(args.runs).iterdir()):
-        run_file = RunFile(run)
-        measured_run_file = run_file.evaluate(
-            args.metric, args.k, distance, user_ids,
-        )
-        results = measured_run_file.combine(results)
-
-    results.rearrange()
-    results.save(args.output)
+    runs = RunFolder(args.runs)
+    measured_runs = runs.evaluate(args.metric, args.k, distance, user_ids)
+    measured_runs.rearrange()
+    measured_runs.save(args.output)
 
 
-"""
-This script evaluates the specified metric for each run. An example usage of the
-script from the root directory includes:
-
-python -m scripts.evaluation.run_metrics --runs results/runs-reranked --input data/ratings.csv --users data/user_ids.txt --output results/metrics/metrics.txt --metric novelty --k 100
-"""
 if __name__ == "__main__":
     main(Arguments(fields).args)

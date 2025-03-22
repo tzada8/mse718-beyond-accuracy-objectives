@@ -27,23 +27,6 @@ class MeasureFile(BaseFile):
         super().__init__(headers, sep, path=path, df=df)
 
 
-    def combine(self, other_mf: Optional["MeasureFile"]) -> "MeasureFile":
-        """
-        Combines this MeasureFile with another MeasureFile.
-
-        Args:
-            other_mf (MeasureFile, optional): The other MeasureFile to combine.
-
-        Returns:
-            MeasureFile: The combined MeasureFile.
-        """
-        if other_mf is None:
-            return self
-
-        combined_df = pd.concat([self.df, other_mf.df], ignore_index=True)
-        return MeasureFile(df=combined_df)
-
-
     def rearrange(self):
         """
         Rearranges this MeasureFile's data in-place. This includes re-ordering
