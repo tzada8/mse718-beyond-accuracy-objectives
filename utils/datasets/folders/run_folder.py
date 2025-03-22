@@ -70,7 +70,8 @@ class RunFolder:
         Returns:
             RunFile: A new RunFolder instance with reranked RunFiles.
         """
-        logger.info(f"Reranking {k} items per user with {1 - tradeoff} {method}")
+        tradeoff_disp = round(1 - tradeoff, 2)
+        logger.info(f"Reranking {k} items per user with {tradeoff_disp} {method}")
         reranked_runs = [
             run.rerank(method, k, tradeoff, distance)
             for run in tqdm(self.runs)

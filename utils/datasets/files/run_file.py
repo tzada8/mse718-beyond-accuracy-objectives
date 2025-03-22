@@ -112,8 +112,7 @@ class RunFile(BaseFile):
             self._rerank_user_group, method, k, tradeoff, distance,
         ).reset_index(drop=True)
 
-        algo_name = f"{self.algorithm}-{k}-{tradeoff}"
-        reranked_df = self._add_constant_columns(reranked_df, algo_name)
+        reranked_df = self._add_constant_columns(reranked_df, self.algorithm)
         return RunFile(df=reranked_df)
 
 
@@ -151,8 +150,7 @@ class RunFile(BaseFile):
             .reset_index(drop=True)
         )
 
-        algo_name = "rrf"
-        rrf_df = self._add_constant_columns(rrf_df, algo_name)
+        rrf_df = self._add_constant_columns(rrf_df, "RRF")
         return RunFile(df=rrf_df)
 
 
