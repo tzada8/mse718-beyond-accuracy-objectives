@@ -23,7 +23,7 @@ class RunFolder:
         RunFile objects.
 
         Args:
-            path (str, optional): The path to the file.
+            path (str, optional): The path to the folder or file.
             runs (list[RunFile], optional): List containing RunFiles.
 
         Raises:
@@ -35,13 +35,17 @@ class RunFolder:
 
         # Read in data either from path or from existing list.
         if path:
-            logger.info(f"Initializing runs at {path}")
-            if not os.path.exists(path):
-                raise ValueError(f"Directory does not exist at {path}")
+            logger.info(f"Initializing runs from {path}")
 
-            self.runs = [
-                RunFile(run) for run in pathlib.Path(path).iterdir()
-            ]
+            input_path = pathlib.Path(path)
+            if input_path.is_file():
+                self.runs = [RunFile(path)]
+            elif input_path.is_dir():
+                self.runs = [
+                    RunFile(run) for run in input_path.iterdir() if run.is_file()
+                ]
+            else:
+                raise ValueError(f"{path} is neither a valid file nor directory")
         elif runs is not None:
             if not isinstance(runs, list):
                 raise ValueError("Provided data must be a list of RunFiles")
