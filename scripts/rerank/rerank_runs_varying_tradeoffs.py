@@ -28,14 +28,12 @@ def main(args):
     tradeoffs = np.linspace(0, 1, args.tradeoffs)
     for tradeoff in tradeoffs:
         runs = RunFolder(args.runs)
-        reranked_runs = runs.rerank(args.objective, args.k, tradeoff, distance)
 
         tradeoff_str = str(round(tradeoff, 2)).replace(".", "")
-        subdir = f"{args.output}/k-{args.k}-tradeoff-{tradeoff_str}"
-        reranked_runs.save(subdir)
+        subdir = f"{args.output}/k_{args.k}_tradeoff_{tradeoff_str}"
 
-        # Calculate RRF at each reranked tradeoff.
-        RunFolder(runs=[reranked_runs.rrf(args.k)]).save(subdir)
+        reranked_runs = runs.rerank(args.objective, args.k, tradeoff, distance)
+        reranked_runs.save(subdir)
 
 
 if __name__ == "__main__":
