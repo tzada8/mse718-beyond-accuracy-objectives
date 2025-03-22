@@ -6,7 +6,8 @@ from utils.objectives.distance import Distance
 
 
 fields = {
-    "description": "Reranks runs to maximize an objective",
+    "description": "Reranks recommendations from each run in a directory with a focus on maximizing an objective",
+    "example_usage": "python -m scripts.rerank.rerank_runs --runs data/runs --input data/ratings.csv --output results/runs-reranked --objective novelty --k 1000 --tradeoff 0.5",
     "args": [
         {"name": "--runs", "type": str, "description": "The runs input directory"},
         {"name": "--input", "type": str, "description": "The movie ratings file"},
@@ -23,18 +24,9 @@ def main(args):
     distance = Distance(rating_file.items_rated(), rating_file.num_users)
 
     runs = RunFolder(args.runs)
-    reranked_runs = runs.rerank(
-        args.objective, args.k, args.tradeoff, distance
-    )
+    reranked_runs = runs.rerank(args.objective, args.k, args.tradeoff, distance)
     reranked_runs.save(args.output)
 
 
-"""
-This script reranks the recommendations from each run with a focus on
-maximizing an objective. An example usage of the script from the root directory
-includes:
-
-python -m scripts.rerank.rerank_runs --runs data/runs --input data/ratings.csv --output results/runs-reranked --objective novelty --k 1000 --tradeoff 0.5
-"""
 if __name__ == "__main__":
     main(Arguments(fields).args)

@@ -10,7 +10,11 @@ class Arguments:
         Args:
             fields (dict): A dictionary of arguments.
         """
-        parser = argparse.ArgumentParser(description=fields["description"])
+        parser = argparse.ArgumentParser(
+            description=fields["description"],
+            epilog=f"Example usage:\n  {fields['example_usage']}",
+            formatter_class=argparse.RawTextHelpFormatter,
+        )
         for arg in fields["args"]:
             parser.add_argument(
                 arg["name"],
