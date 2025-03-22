@@ -5,12 +5,14 @@ class Rerank:
     # Specify default alpha value for relevance.
     tradeoff = 0.5
 
-    def __init__(self, recs: list[int, float], limit: int, distance: Distance):
+    def __init__(
+            self, recs: list[list[int, float]], limit: int, distance: Distance,
+        ):
         """
         Defines rerankers for a given recommendation list.
 
         Args:
-            recs (list[int, float]): The initial item recommendations and their scores.
+            recs (list[list[int, float]]): The initial item recs and their scores.
             limit (int): The cutoff point for the number of items.
             distance (Distance): Calculates item distance objectives.
         """

@@ -1,4 +1,5 @@
 import os
+import pathlib
 from typing import Optional, Union
 
 import pandas as pd
@@ -40,15 +41,16 @@ class BaseFile:
             try:
                 self.df = pd.read_csv(
                     path,
-                    sep=self.sep,
-                    names=self.headers,
+                    sep=sep,
+                    names=headers,
                     header=header_provided,
                 )
             except Exception as e:
                 raise ValueError(f"Error reading file at {path}: {e}")
-        elif df:
+        elif df is not None:
             if not isinstance(df, pd.DataFrame):
                 raise ValueError("Provided data must be a pandas DataFrame")
+            self.df = df
         else:
             raise ValueError("Either `path` or `df` must be provided")
 
@@ -64,7 +66,8 @@ class BaseFile:
         Args:
             path (str): The full path to save the file.
         """
-        os.makedirs(path, exist_ok=True)
+        parent_dir = pathlib.Path(path).parent
+        parent_dir.mkdir(parents=True, exist_ok=True)
 
         try:
             self.df.to_csv(

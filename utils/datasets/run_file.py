@@ -57,7 +57,7 @@ class RunFile(BaseFile):
         Returns:
             pd.DataFrame: The user's reranked results.
         """
-        movie_list = user_group.values.tolist()
+        movie_list = list(map(tuple, user_group.to_numpy()))
         reranker = Rerank(movie_list, k, distance)
 
         # Ensure reranker method exists.
@@ -95,6 +95,7 @@ class RunFile(BaseFile):
         reranked_df["q0"] = "Q0"
         reranked_df["algorithm"] = f"{self.algorithm}-{k}-{tradeoff}"
         reranked_df["rank"] = reranked_df.groupby("user_id").cumcount() + 1
+        reranked_df["movie_id"] = reranked_df["movie_id"].astype(int)
         reranked_df = reranked_df[self.headers]
 
         return RunFile(df=reranked_df)
