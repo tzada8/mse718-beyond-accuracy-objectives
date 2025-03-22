@@ -142,5 +142,5 @@ class RunFile(BaseFile):
         avg_rows_df["user_id"] = "all"
 
         # Combine metric run results.
-        results_df = pd.concat([results_df, metrics_df, avg_rows_df], ignore_index=True)
+        results_df = pd.concat([metrics_df, avg_rows_df], ignore_index=True)
         return MeasureFile(df=results_df)
