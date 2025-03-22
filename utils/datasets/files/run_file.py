@@ -4,9 +4,9 @@ import pandas as pd
 
 from .base_file import BaseFile
 from .measure_file import MeasureFile
-from ..objectives.distance import Distance
-from ..objectives.measures import Measures
-from ..objectives.rerank import Rerank
+from utils.objectives.distance import Distance
+from utils.objectives.measures import Measures
+from utils.objectives.rerank import Rerank
 
 
 class RunFile(BaseFile):

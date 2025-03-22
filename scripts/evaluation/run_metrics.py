@@ -2,12 +2,12 @@ import pathlib
 
 from tqdm import tqdm
 
-from utils.datasets.measure_file import MeasureFile
-from utils.datasets.rating_file import RatingFile
-from utils.datasets.run_file import RunFile
-from utils.datasets.user_ids_file import UserIdsFile
+from utils.datasets.files.rating_file import RatingFile
+from utils.datasets.files.run_file import RunFile
+from utils.datasets.files.user_ids_file import UserIdsFile
 from utils.interface.arguments import Arguments
 from utils.objectives.distance import Distance
+
 
 fields = {
     "description": "Evaluates specified metric across runs",

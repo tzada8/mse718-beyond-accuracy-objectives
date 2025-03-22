@@ -2,10 +2,11 @@ import pathlib
 
 from tqdm import tqdm
 
-from utils.datasets.rating_file import RatingFile
-from utils.datasets.run_file import RunFile
+from utils.datasets.files.rating_file import RatingFile
+from utils.datasets.files.run_file import RunFile
 from utils.interface.arguments import Arguments
 from utils.objectives.distance import Distance
+
 
 fields = {
     "description": "Reranks runs to maximize an objective",
