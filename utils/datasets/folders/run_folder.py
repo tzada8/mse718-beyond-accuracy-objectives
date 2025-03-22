@@ -101,6 +101,22 @@ class RunFolder:
         return MeasureFile.combine(measured_runs)
 
 
+    def rrf(self, k: int) -> RunFile:
+        """
+        Performs reciprocal rank fusion (RRF) across all runs.
+
+        Args:
+            k (int): Number of recommendations to combine.
+
+        Returns:
+            RunFile: A single RunFile of the combined runs.
+        """
+        logger.info(f"Performing RRF to combine top {k} items per user")
+        rrf_runs = [run.add_rrf_scores() for run in tqdm(self.runs)]
+        rrf_file = RunFile.combine(rrf_runs)
+        return rrf_file.setup_rrf_file(k)
+
+
     def save(self, path: str):
         """
         Saves the runs at the specified folder path.

@@ -71,6 +71,27 @@ class RunFile(BaseFile):
         ).assign(user_id=user_group.name)
 
 
+    def _add_constant_columns(
+        self, df: pd.DataFrame, algorithm: str,
+    ) -> pd.DataFrame:
+        """
+        Adds back constant columns and updates ranking order.
+
+        Args:
+            df (pd.DataFrame): The dataframe to add the columns to.
+            algorithm (str): Name of algorithm.
+
+        Returns:
+            pd.DataFrame: The updated dataframe with the additional columns.
+        """
+        df["q0"] = "Q0"
+        df["algorithm"] = algorithm
+        df["rank"] = df.groupby("user_id").cumcount() + 1
+        df["movie_id"] = df["movie_id"].astype(int)
+        df = df[self.headers]
+        return df
+
+
     def rerank(
         self, method: str, k: int, tradeoff: float, distance: Distance,
     ) -> "RunFile":
@@ -91,14 +112,48 @@ class RunFile(BaseFile):
             self._rerank_user_group, method, k, tradeoff, distance,
         ).reset_index(drop=True)
 
-        # Add back constant columns and update ranking order.
-        reranked_df["q0"] = "Q0"
-        reranked_df["algorithm"] = f"{self.algorithm}-{k}-{tradeoff}"
-        reranked_df["rank"] = reranked_df.groupby("user_id").cumcount() + 1
-        reranked_df["movie_id"] = reranked_df["movie_id"].astype(int)
-        reranked_df = reranked_df[self.headers]
-
+        algo_name = f"{self.algorithm}-{k}-{tradeoff}"
+        reranked_df = self._add_constant_columns(reranked_df, algo_name)
         return RunFile(df=reranked_df)
+
+
+    def add_rrf_scores(self) -> "RunFile":
+        """
+        Updates the score column with the calculated RRF scores for all items
+        in the run.
+
+        Returns:
+            RunFile: Same format as initial RunFile except with update scores.
+        """
+        k = 60
+        rrf_df = self.df.copy()
+        rrf_df["score"] = 1 / (rrf_df["rank"] + k)
+        return RunFile(df=rrf_df)
+
+
+    def setup_rrf_file(self, k: int) -> "RunFile":
+        """
+        Updates an existing RunFile to correctly represent the RRFed data. This
+        includes aggregating scores across and reordering.
+
+        Args:
+            k (int): Number of recommendations to combine.
+
+        Returns:
+            RunFile: The completely formatted RRF RunFile.
+        """
+        rrf_df = (
+            self.df.groupby(["user_id", "movie_id"])["score"].sum()
+            .reset_index()
+            .sort_values(by=["user_id", "score"], ascending=[True, False])
+            .groupby("user_id")
+            .head(k)
+            .reset_index(drop=True)
+        )
+
+        algo_name = "rrf"
+        rrf_df = self._add_constant_columns(rrf_df, algo_name)
+        return RunFile(df=rrf_df)
 
 
     def evaluate(
