@@ -84,7 +84,7 @@ class RunFile(BaseFile):
             distance (Distance): Defines how item distances are measured.
 
         Returns:
-            pd.DataFrame: Re-ordered data of the originial run.
+            RunFile: Re-ordered data of the originial run.
         """
         # Rerank each user's recommendations within the run.
         reranked_df = self.df.groupby("user_id")[["movie_id", "score"]].apply(
@@ -113,6 +113,8 @@ class RunFile(BaseFile):
             distance (Distance): Defines how item distances are measured.
             user_ids (set[int]): Set of all users.
 
+        Returns:
+            MeasureFile: The measured results of the run.
         """
         # Evaluate each user's recommendations within the run.
         metrics_df = self.df.groupby("user_id")["movie_id"].apply(

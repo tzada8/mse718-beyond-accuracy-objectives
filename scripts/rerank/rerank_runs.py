@@ -1,10 +1,7 @@
-import pathlib
-
-from tqdm import tqdm
-
 from utils.datasets.files.rating_file import RatingFile
-from utils.datasets.files.run_file import RunFile
+from utils.datasets.folders.run_folder import RunFolder
 from utils.interface.arguments import Arguments
+import utils.interface.logging_config
 from utils.objectives.distance import Distance
 
 
@@ -25,13 +22,11 @@ def main(args):
     rating_file = RatingFile(args.input)
     distance = Distance(rating_file.items_rated(), rating_file.num_users)
 
-    for run in tqdm(pathlib.Path(args.runs).iterdir()):
-        run_file = RunFile(run)
-        reranked_run_file = run_file.rerank(
-            args.objective, args.k, args.tradeoff, distance,
-        )
-        reranked_run_path = f"{args.output}/{reranked_run_file.algorithm}.results"
-        reranked_run_file.save(reranked_run_path)
+    runs = RunFolder(args.runs)
+    reranked_runs = runs.rerank(
+        args.objective, args.k, args.tradeoff, distance
+    )
+    reranked_runs.save(args.output)
 
 
 """
