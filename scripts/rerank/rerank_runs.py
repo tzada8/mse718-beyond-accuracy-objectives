@@ -7,7 +7,7 @@ from utils.objectives.distance import Distance
 
 fields = {
     "description": "Reranks recommendations from each run in a directory with a focus on maximizing an objective",
-    "example_usage": "python -m scripts.rerank.rerank_runs --runs data/runs --input data/ratings.csv --output results/runs-reranked --objective novelty --k 1000 --tradeoff 0.5",
+    "example_usage": "python -m scripts.rerank.rerank_runs --runs data/runs --input data/ratings.csv --output results/runs_reranked --objective novelty --k 1000 --tradeoff 0.5",
     "args": [
         {"name": "--runs", "type": str, "description": "The runs input directory or file"},
         {"name": "--input", "type": str, "description": "The movie ratings file"},

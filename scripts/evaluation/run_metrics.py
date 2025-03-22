@@ -8,7 +8,7 @@ from utils.objectives.distance import Distance
 
 fields = {
     "description": "Evaluates specified metric across runs",
-    "example_usage": "python -m scripts.evaluation.run_metrics --runs results/runs-reranked --input data/ratings.csv --users data/user_ids.txt --output results/metrics/metrics.txt --metric novelty --k 100",
+    "example_usage": "python -m scripts.evaluation.run_metrics --runs results/runs_reranked --input data/ratings.csv --users data/user_ids.txt --output results/metrics/metrics.txt --metric novelty --k 100",
     "args": [
         {"name": "--runs", "type": str, "description": "The runs input directory or file"},
         {"name": "--input", "type": str, "description": "The movie ratings file"},

@@ -5,7 +5,7 @@ import utils.interface.logging_config
 
 fields = {
     "description": "Performs reciprocal rank fusion (RRF) for all runs in a single directory",
-    "example_usage": "python -m scripts.rerank.rrf --runs data/runs --output results/runs-reranked/rrf.results --k 1000",
+    "example_usage": "python -m scripts.rerank.rrf --runs data/runs --output results/runs_reranked/rrf.results --k 1000",
     "args": [
         {"name": "--runs", "type": str, "description": "The runs input directory"},
         {"name": "--output", "type": str, "description": "The RRF run output file"},

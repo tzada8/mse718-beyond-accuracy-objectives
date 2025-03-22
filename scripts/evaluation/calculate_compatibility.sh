@@ -10,4 +10,4 @@ do
 done
 
 # Example usage from root directory:
-# scripts/evaluation/calculate-compatibility.sh results/metrics/p2-cranfield.txt data/runs
+# scripts/evaluation/calculate_compatibility.sh results/metrics/compatibility/p2_cranfield.txt results/runs_reranked

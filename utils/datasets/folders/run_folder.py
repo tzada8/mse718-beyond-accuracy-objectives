@@ -20,7 +20,7 @@ class RunFolder:
         runs: Optional[list[RunFile]] = None,
     ):
         """
-        Initializes a RunFolder object from a folder path, containing many
+        Initializes a RunFolder object from a folder/file path, containing many
         RunFile objects.
 
         Args:
