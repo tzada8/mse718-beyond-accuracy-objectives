@@ -76,6 +76,17 @@ class BaseFile:
         return cls(df=combined_df)
 
 
+    def filter(self, f: dict[str, str]):
+        """
+        Applies a mapping of filters in-place.
+
+        Args:
+            f (dict[str, str]): Mapping of column name to value filters.
+        """
+        for column, value in f.items():
+            self.df = self.df[self.df[column] == value]
+
+
     def save(self, path: str):
         """
         Saves the run at the specified file path.
