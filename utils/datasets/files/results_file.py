@@ -26,7 +26,7 @@ class ResultsFile(BaseFile):
         """
         headers = ["algorithm", "method", "novelty", "compatibility-98"]
         sep = "\t"
-        super().__init__(headers, sep, path=path, df=df)
+        super().__init__(headers, sep, path=path, df=df, header_provided=0)
 
 
     @classmethod
