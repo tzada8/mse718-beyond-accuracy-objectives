@@ -41,13 +41,8 @@ def main(args):
 
         mfile = MeasureFile(metr_path)
         qfile = QualityFile(qual_path)
-        res_file = ResultsFile(
-            args.qrel,
-            args.measure,
-            args.quality,
-            method,
-            mfile=mfile,
-            qfile=qfile,
+        res_file = ResultsFile.generate(
+            args.qrel, args.measure, args.quality, method, mfile, qfile,
         )
         files.append(res_file)
 
