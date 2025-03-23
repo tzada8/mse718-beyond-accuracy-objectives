@@ -3,6 +3,7 @@ import pathlib
 from adjustText import adjust_text
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.interpolate import interp1d
 from scipy.stats import kendalltau
 import seaborn as sns
 
@@ -259,4 +260,49 @@ class Visualizations:
         ax1.set_xticklabels(ax1.get_xticklabels(), rotation=45, ha="right")
         ax2.set_xticklabels(ax2.get_xticklabels(), rotation=45, ha="right")
 
+        self._save_image(file_name)
+
+
+    def line_plot_improvement(
+        self,
+        fig_size: tuple[int, int],
+        x: str,
+        l1: str,
+        l2: str,
+        best_other: float,
+        file_name: str,
+    ):
+        """
+        Plots a line graph depicting how much of a shift still resolves in
+        improvement.
+
+        Args:
+            fig_size (tuple[int, int]): The dimensions of the plot.
+            x (str): The column name for the x-axis.
+            l1 (str): The column name for the first line.
+            l2 (str): The column name for the second line.
+            best_other (float): The best value for l2 from other run.
+            file_name (str): The name of the file being saved.
+        """
+        # Interpolate to find when scores are the same.
+        l2_interp_func = interp1d(self.df[l2], self.df[x], kind="linear", fill_value="extrapolate")
+        x_intersect = l2_interp_func(best_other)
+
+        # Interpolate other value at intersection point.
+        l1_interp_func = interp1d(self.df[x], self.df[l1], kind="linear", fill_value="extrapolate")
+        l1_at_intersection = l1_interp_func(x_intersect)
+
+        plt.figure(figsize=fig_size)
+        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}")
+        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}")
+        plt.plot(self.df[x], [best_other] * len(self.df[x]), linestyle="-", label=f"Best run {l2}")
+
+        # Mark intersection.
+        plt.axvline(x=x_intersect, linestyle="--", color="black", label=f"Intersection of {l2}")
+        plt.scatter(x_intersect, l1_at_intersection, color="black", zorder=3, label=f"{l1.capitalize()}={l1_at_intersection:.2f}")
+
+        self._add_axes(x, "score")
+        plt.xticks(self.df[x])
+        plt.xlim(0, 1)
+        plt.legend()
         self._save_image(file_name)

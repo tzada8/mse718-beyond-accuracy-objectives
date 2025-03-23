@@ -43,7 +43,6 @@ def main(args):
         "novelty-relevance-heatmap.png",
         ".2f",
         y_order=y_order,
-
     )
 
 
