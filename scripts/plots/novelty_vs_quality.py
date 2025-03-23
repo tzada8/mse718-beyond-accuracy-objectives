@@ -15,33 +15,43 @@ fields = {
 
 
 def main(args):
+    improved_method_col = "Tradeoff"
+    improved_novelty_col = "Novelty"
+    improved_compat_col = "Compatibility (p=0.98)"
+
     results = ResultsFile(args.input)
+    results.df = results.df.rename(
+        columns={
+            "method": improved_method_col,
+            "novelty": improved_novelty_col,
+            "compatibility-98": improved_compat_col,
+        }
+    )
     results2 = ResultsFile(df=results.df)
 
-    results.filter({"method": "1.0 relevance"})
+    results.filter({improved_method_col: "1.0 relevance"})
 
     visualizations = Visualizations(results.df, args.output)
     visualizations.scatter_plot_labelled_points(
         (5, 5),
-        "compatibility-98",
-        "novelty",
+        improved_compat_col,
+        improved_novelty_col,
         "algorithm",
         "novelty-relevance-scatter.png",
         "top right",
     )
 
-    y_order = results2.df[results2.df["method"] == "0.0 relevance"]
-    y_order = list(y_order.sort_values(by="novelty")["algorithm"].unique())
+    y_order = results2.df[results2.df[improved_method_col] == "1.0 relevance"]
+    y_order = list(y_order.sort_values(by=improved_compat_col, ascending=False)["algorithm"].unique())
 
     visualizations2 = Visualizations(results2.df, args.output)
     visualizations2.side_by_side_heatmap(
         (20, 6),
-        "method",
+        improved_method_col,
         "algorithm",
-        "novelty",
-        "compatibility-98",
+        improved_novelty_col,
+        improved_compat_col,
         "novelty-relevance-heatmap.png",
-        ".2f",
         y_order=y_order,
     )
 

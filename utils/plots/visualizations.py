@@ -39,7 +39,7 @@ class Visualizations:
         kendall_corr, p_value = kendalltau(data1, data2)
         p_value_text = f"p<0.001" if p_value < 0.001 else f"p={p_value:.3f}"
 
-        corr_text = f"Kendall's tau={kendall_corr:.2f}\n({p_value_text})"
+        corr_text = f"Kendall's Tau={kendall_corr:.2f}\n({p_value_text})"
         return corr_text
 
 
@@ -66,19 +66,6 @@ class Visualizations:
         return prep_df
 
 
-    def _titleize(self, name: str) -> str:
-        """
-        Cleans a name by adding spaces and capitalizing each word.
-
-        Args:
-            name (str): The name to be titleized.
-
-        Returns:
-            str: The cleaned name.
-        """
-        return name.replace("_", " ").replace("-", " ").title()
-
-
     def _add_axes(self, x: str, y: str, label: str = None, rotate_x: bool = False):
         """
         Adds titles to the axes and a legend if a label is provided.
@@ -90,8 +77,8 @@ class Visualizations:
             rotate_x (bool): True if x-axis labels should be rotated. False
             otherwise (default: False).
         """
-        plt.xlabel(self._titleize(x))
-        plt.ylabel(self._titleize(y))
+        plt.xlabel(x)
+        plt.ylabel(y)
 
         # Rotate x labels to improve readability if too cluttered.
         rotate_amt = 45 if rotate_x else 0
@@ -99,7 +86,7 @@ class Visualizations:
         plt.xticks(rotation=rotate_amt, ha=x_ha)
 
         if label:
-            plt.legend(title=self._titleize(label))
+            plt.legend(title=label)
 
 
     def _save_image(self, file_name: str):
@@ -136,7 +123,7 @@ class Visualizations:
             corr_loc (str, optional): The location for the correlation box.
         """
         plt.figure(figsize=fig_size)
-        sns.scatterplot(x=x, y=y, data=self.df, s=25, color="red")
+        sns.scatterplot(x=x, y=y, data=self.df, s=35, color="red")
 
         # Add label to each point.
         texts = [
@@ -166,6 +153,7 @@ class Visualizations:
             bbox=dict(facecolor="white", alpha=0.5, edgecolor="gray"),
         )
 
+        plt.grid(alpha=0.3)
         self._add_axes(x, y)
         self._save_image(file_name)
 
@@ -251,10 +239,10 @@ class Visualizations:
         ax2.yaxis.tick_right()
         ax2.tick_params(rotation=0)
 
-        ax1.set_xlabel(self._titleize(x))
+        ax1.set_xlabel(x)
         ax1.set_ylabel(None)
 
-        ax2.set_xlabel(self._titleize(x))
+        ax2.set_xlabel(x)
         ax2.set_ylabel(None)
 
         ax1.set_xticklabels(ax1.get_xticklabels(), rotation=45, ha="right")
