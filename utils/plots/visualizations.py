@@ -1,5 +1,7 @@
 import pathlib
 
+import numpy as np
+
 from adjustText import adjust_text
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -257,7 +259,8 @@ class Visualizations:
         x: str,
         l1: str,
         l2: str,
-        best_other: float,
+        best_other_l1: float,
+        best_other_l2: float,
         file_name: str,
     ):
         """
@@ -269,28 +272,37 @@ class Visualizations:
             x (str): The column name for the x-axis.
             l1 (str): The column name for the first line.
             l2 (str): The column name for the second line.
-            best_other (float): The best value for l2 from other run.
+            best_other_l1 (float): The best value for l1 from other run.
+            best_other_l2 (float): The best value for l2 from other run.
             file_name (str): The name of the file being saved.
         """
         # Interpolate to find when scores are the same.
         l2_interp_func = interp1d(self.df[l2], self.df[x], kind="linear", fill_value="extrapolate")
-        x_intersect = l2_interp_func(best_other)
+        x_intersect = l2_interp_func(best_other_l2)
 
         # Interpolate other value at intersection point.
         l1_interp_func = interp1d(self.df[x], self.df[l1], kind="linear", fill_value="extrapolate")
         l1_at_intersection = l1_interp_func(x_intersect)
 
         plt.figure(figsize=fig_size)
-        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}")
-        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}")
-        plt.plot(self.df[x], [best_other] * len(self.df[x]), linestyle="-", label=f"Best run {l2}")
+        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}", color="#08519C")
+        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}", color ="#A50F15")
+        plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best run {l1}", color="#6BAED6")
+        plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best run {l2}", color="#FB6A4A")
 
         # Mark intersection.
         plt.axvline(x=x_intersect, linestyle="--", color="black", label=f"Intersection of {l2}")
-        plt.scatter(x_intersect, l1_at_intersection, color="black", zorder=3, label=f"{l1.capitalize()}={l1_at_intersection:.2f}")
+        plt.scatter(
+            x_intersect,
+            l1_at_intersection,
+            color="black",
+            zorder=3,
+            label=f"{l1.capitalize()}={l1_at_intersection:.2f} at intersection",
+        )
 
-        self._add_axes(x, "score")
+        self._add_axes(x, "Score")
         plt.xticks(self.df[x])
         plt.xlim(0, 1)
+        plt.xticks(np.arange(0, 1.1, 0.1))
         plt.legend()
         self._save_image(file_name)

@@ -29,7 +29,7 @@ def main(args):
     )
     results2 = ResultsFile(df=results.df)
 
-    results.filter({improved_method_col: "1.0 relevance"})
+    results.filter({improved_method_col: "1.00 relevance"})
 
     visualizations = Visualizations(results.df, args.output)
     visualizations.scatter_plot_labelled_points(
@@ -41,7 +41,7 @@ def main(args):
         "top right",
     )
 
-    y_order = results2.df[results2.df[improved_method_col] == "1.0 relevance"]
+    y_order = results2.df[results2.df[improved_method_col] == "1.00 relevance"]
     y_order = list(y_order.sort_values(by=improved_compat_col, ascending=False)["algorithm"].unique())
 
     visualizations2 = Visualizations(results2.df, args.output)
