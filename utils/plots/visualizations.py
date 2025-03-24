@@ -284,16 +284,16 @@ class Visualizations:
         """
         # Mappings.
         line_map = {
-            f"RRF {l2}": "#A50F15",
-            f"RRF {l1}": "#08519C",
+            f"RRF - {l2}": "#A50F15",
+            f"RRF - {l1}": "#08519C",
             "": "#FAFCFD",
-            f"Best algorithm {l2}": "#FB6A4A",
-            f"Best algorithm {l1}": "#6BAED6",
+            f"Best algorithm - {l2}": "#FB6A4A",
+            f"Best algorithm - {l1}": "#6BAED6",
         }
         colour_map = {
-            "Best algorithm > RRF": "#FBB4B4",
+            "Best algorithm is better": "#FBB4B4",
             "No difference": "#E8E8E8",
-            "RRF > Best algorithm": "#B3D4E6",
+            "RRF is better": "#B3D4E6",
         }
 
         # Interpolate l1 line.
@@ -304,34 +304,23 @@ class Visualizations:
         plt.figure(figsize=fig_size)
 
         # Plot significance ranges.
-        plt.axvspan(0, indiff_lower, color=colour_map["Best algorithm > RRF"], alpha=0.3)
+        plt.axvspan(0, indiff_lower, color=colour_map["Best algorithm is better"], alpha=0.3)
         plt.axvspan(indiff_lower, indiff_upper, color=colour_map["No difference"], alpha=0.3)
-        plt.axvspan(indiff_upper, 1, color=colour_map["RRF > Best algorithm"], alpha=0.3)
+        plt.axvspan(indiff_upper, 1, color=colour_map["RRF is better"], alpha=0.3)
 
-        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}", color =line_map[f"RRF {l2}"])
-        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}", color=line_map[f"RRF {l1}"])
-        plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best algorithm {l2}", color=line_map[f"Best algorithm {l2}"])
-        plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best algorithm {l1}", color=line_map[f"Best algorithm {l1}"])
+        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF - {l2}", color =line_map[f"RRF - {l2}"])
+        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF - {l1}", color=line_map[f"RRF - {l1}"])
+        plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best algorithm - {l2}", color=line_map[f"Best algorithm - {l2}"])
+        plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best algorithm - {l1}", color=line_map[f"Best algorithm - {l1}"])
+
+        x_shift = 0.008
 
         # Mark intersections.
-        plt.scatter(
-            indiff_lower,
-            l1_intersect_min,
-            color="black",
-            s=25,
-            zorder=3,
-            label=f"{l1.capitalize()}={l1_intersect_min:.2f} at intersection",
-        )
-        plt.annotate(f"{l1_intersect_min:.2f}", (indiff_lower + 0.008, l1_intersect_min), fontsize=7.5)
-        plt.scatter(
-            indiff_upper,
-            l1_intersect_max,
-            color="black",
-            s=25,
-            zorder=3,
-            label=f"{l1.capitalize()}={l1_intersect_min:.2f} at intersection",
-        )
-        plt.annotate(f"{l1_intersect_max:.2f}", (indiff_upper + 0.008, l1_intersect_max), fontsize=7.5)
+        plt.scatter(indiff_lower, l1_intersect_min, color="black", s=25, zorder=3)
+        plt.annotate(f"{l1_intersect_min:.2f}", (indiff_lower + x_shift, l1_intersect_min), fontsize=7.5)
+
+        plt.scatter(indiff_upper, l1_intersect_max, color="black", s=25, zorder=3)
+        plt.annotate(f"{l1_intersect_max:.2f}", (indiff_upper + x_shift, l1_intersect_max), fontsize=7.5)
 
         self._add_axes(x, "Score")
         plt.xticks(self.df[x])
