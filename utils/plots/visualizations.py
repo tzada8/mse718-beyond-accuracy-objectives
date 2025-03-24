@@ -3,6 +3,8 @@ import pathlib
 import numpy as np
 
 from adjustText import adjust_text
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.interpolate import interp1d
@@ -261,6 +263,8 @@ class Visualizations:
         l2: str,
         best_other_l1: float,
         best_other_l2: float,
+        indiff_lower: float,
+        indiff_upper: float,
         file_name: str,
     ):
         """
@@ -274,35 +278,88 @@ class Visualizations:
             l2 (str): The column name for the second line.
             best_other_l1 (float): The best value for l1 from other run.
             best_other_l2 (float): The best value for l2 from other run.
+            indiff_lower (float): The lower bound for insignificance.
+            indiff_upper (float): The upper bound for insignificance.
             file_name (str): The name of the file being saved.
         """
-        # Interpolate to find when scores are the same.
-        l2_interp_func = interp1d(self.df[l2], self.df[x], kind="linear", fill_value="extrapolate")
-        x_intersect = l2_interp_func(best_other_l2)
+        # Mappings.
+        line_map = {
+            f"RRF {l2}": "#A50F15",
+            f"RRF {l1}": "#08519C",
+            "": "#FAFCFD",
+            f"Best run {l2}": "#FB6A4A",
+            f"Best run {l1}": "#6BAED6",
+        }
+        colour_map = {
+            "Best run > RRF": "#FBB4B4",
+            "No difference": "#E8E8E8",
+            "RRF > Best run": "#B3D4E6",
+        }
 
-        # Interpolate other value at intersection point.
+        # Interpolate l1 line.
         l1_interp_func = interp1d(self.df[x], self.df[l1], kind="linear", fill_value="extrapolate")
-        l1_at_intersection = l1_interp_func(x_intersect)
+        l1_intersect_min = l1_interp_func(indiff_lower)
+        l1_intersect_max = l1_interp_func(indiff_upper)
 
         plt.figure(figsize=fig_size)
-        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}", color="#08519C")
-        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}", color ="#A50F15")
-        plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best run {l1}", color="#6BAED6")
-        plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best run {l2}", color="#FB6A4A")
 
-        # Mark intersection.
-        plt.axvline(x=x_intersect, linestyle="--", color="black", label=f"Intersection of {l2}")
+        # Plot significance ranges.
+        plt.axvspan(0, indiff_lower, color=colour_map["Best run > RRF"], alpha=0.3)
+        plt.axvspan(indiff_lower, indiff_upper, color=colour_map["No difference"], alpha=0.3)
+        plt.axvspan(indiff_upper, 1, color=colour_map["RRF > Best run"], alpha=0.3)
+
+        plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF {l2}", color =line_map[f"RRF {l2}"])
+        plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF {l1}", color=line_map[f"RRF {l1}"])
+        plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best run {l2}", color=line_map[f"Best run {l2}"])
+        plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best run {l1}", color=line_map[f"Best run {l1}"])
+
+        # Mark intersections.
         plt.scatter(
-            x_intersect,
-            l1_at_intersection,
+            indiff_lower,
+            l1_intersect_min,
             color="black",
+            s=25,
             zorder=3,
-            label=f"{l1.capitalize()}={l1_at_intersection:.2f} at intersection",
+            label=f"{l1.capitalize()}={l1_intersect_min:.2f} at intersection",
         )
+        plt.annotate(f"{l1_intersect_min:.2f}", (indiff_lower + 0.008, l1_intersect_min), fontsize=7) 
+        plt.scatter(
+            indiff_upper,
+            l1_intersect_max,
+            color="black",
+            s=25,
+            zorder=3,
+            label=f"{l1.capitalize()}={l1_intersect_min:.2f} at intersection",
+        )
+        plt.annotate(f"{l1_intersect_max:.2f}", (indiff_upper + 0.008, l1_intersect_max), fontsize=7)
 
         self._add_axes(x, "Score")
         plt.xticks(self.df[x])
         plt.xlim(0, 1)
         plt.xticks(np.arange(0, 1.1, 0.1))
-        plt.legend()
+
+        # Create custom legend.
+        legend_lines = [
+            Line2D([0], [0], color=line_map[key], lw=1, label=key) for key in line_map
+        ]
+        legend_patches = [
+            Patch(color=colour_map[key], label=key) for key in colour_map
+        ]
+
+        lines_legend = plt.legend(
+            handles=legend_lines,
+            loc="upper right",
+            title="RRF vs Best run",
+            title_fontproperties={"weight": "bold"},
+            alignment="left",
+        )
+        plt.legend(
+            handles=legend_patches,
+            loc="lower right",
+            title="Statistical significance\n(p < 0.01)",
+            title_fontproperties={"weight": "bold"},
+            alignment="left",
+        )
+        plt.gca().add_artist(lines_legend)
+
         self._save_image(file_name)

@@ -16,9 +16,15 @@ fields = {
 
 def main(args):
     results = ResultsFile(args.input)
-    best_run_compat = results.df.loc[results.df["algorithm"] == "EASE", "compatibility-98"].max()
+
+    # Tradeoffs leading to insignificant results.
+    indiff_lower = 0.51
+    indiff_upper = 0.69
+
+    # Best run scores.
     best_run_compat = 0.2894
     best_run_novelty = 0.2791
+
     results.filter({"algorithm": "RRF"})
     results.df["method"] = results.df["method"].str.replace(" relevance", "").astype(float)
     results.df = results.df.rename(
@@ -33,6 +39,8 @@ def main(args):
         "compatibility",
         best_run_novelty,
         best_run_compat,
+        indiff_lower,
+        indiff_upper,
         "rrf-improvement.png",
     )
 

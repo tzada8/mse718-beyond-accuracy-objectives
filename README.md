@@ -103,3 +103,8 @@ Note that all scripts should be run from the root directory.
     ```
     python -m scripts.plots.rrf_vs_best_run --input results/metrics/combined_interest.txt --output results/plots
     ```
+
+3. The following script compares the best run to varying RRF tradeoffs to determine the significance distribution
+    ```
+    python -m scripts.plots.rrf_significance --best_run results/metrics/compatibility/p2_cranfield_k_100_tradeoff_08.txt --rrf results/metrics/rrf-101/compatibility --output results/plots/rrf-101/rrf_significance.txt --metric compatibility-98
+    ```
