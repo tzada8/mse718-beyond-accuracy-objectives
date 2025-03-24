@@ -72,14 +72,14 @@ Note that all scripts should be run from the root directory.
     ```
     OR
     ```
-    python -m scripts.rerank.rerank_runs_varying_tradeoffs --runs data/runs_reranked/rrf.results --input data/ratings.csv --output results/runs_reranked --objective novelty --k 1000 --tradeoffs 11
+    python -m scripts.rerank.rerank_runs_varying_tradeoffs --runs results/runs_reranked/rrf.results --input data/ratings.csv --output results/runs_reranked --objective novelty --k 1000 --tradeoffs 11
     ```
 
 ### Evaluate Runs
 
-1. The following script evaluates the quality/relevance of a run's recommendations
+1. The following script evaluates the quality/relevance of a all runs within a directory recommendations
     ```
-    scripts/evaluation/calculate_compatibility.sh results/metrics/compatibility/p2_cranfield.txt results/runs_reranked
+    scripts/evaluation/calculate_compatibility.sh results/metrics/compatibility results/runs_reranked
     ```
 
 2. The following script evaluates the novelty of each run's recommendations

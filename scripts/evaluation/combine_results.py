@@ -23,10 +23,11 @@ fields = {
 
 
 def decode_file_name(file_name: str) -> str:
-    match = re.search(r"_(\d{2})\.txt$", file_name)
+    match = re.search(r"_(\d{2,3})\.txt$", file_name)
     if match:
-        number = int(match.group(1))
-        formatted_number = f"{number / 10:.1f}"
+        str_num = str(match.group(1))
+        decimal = int(str_num) / (10 ** (len(str_num) - 1))
+        formatted_number = f"{decimal:.2f}"
         return f"{formatted_number} relevance"
     return "Invalid file name"
 
