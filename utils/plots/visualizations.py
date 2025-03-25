@@ -291,9 +291,9 @@ class Visualizations:
             f"Best algorithm - {l1}": "#6BAED6",
         }
         colour_map = {
-            "Best algorithm is better": "#FBB4B4",
-            "No difference": "#E8E8E8",
             "RRF is better": "#B3D4E6",
+            "No difference": "#E8E8E8",
+            "Best algorithm is better": "#FBB4B4",
         }
 
         # Interpolate l1 line.
@@ -304,23 +304,24 @@ class Visualizations:
         plt.figure(figsize=fig_size)
 
         # Plot significance ranges.
-        plt.axvspan(0, indiff_lower, color=colour_map["Best algorithm is better"], alpha=0.3)
-        plt.axvspan(indiff_lower, indiff_upper, color=colour_map["No difference"], alpha=0.3)
         plt.axvspan(indiff_upper, 1, color=colour_map["RRF is better"], alpha=0.3)
+        plt.axvspan(indiff_lower, indiff_upper, color=colour_map["No difference"], alpha=0.3)
+        plt.axvspan(0, indiff_lower, color=colour_map["Best algorithm is better"], alpha=0.3)
 
         plt.plot(self.df[x], self.df[l2], linestyle="-", label=f"RRF - {l2}", color =line_map[f"RRF - {l2}"])
         plt.plot(self.df[x], self.df[l1], linestyle="-", label=f"RRF - {l1}", color=line_map[f"RRF - {l1}"])
         plt.plot(self.df[x], [best_other_l2] * len(self.df[x]), linestyle="-", label=f"Best algorithm - {l2}", color=line_map[f"Best algorithm - {l2}"])
         plt.plot(self.df[x], [best_other_l1] * len(self.df[x]), linestyle="-", label=f"Best algorithm - {l1}", color=line_map[f"Best algorithm - {l1}"])
 
-        x_shift = 0.008
+        x_shift = 0.012
+        y_shift = 0.0075
 
         # Mark intersections.
         plt.scatter(indiff_lower, l1_intersect_min, color="black", s=25, zorder=3)
-        plt.annotate(f"{l1_intersect_min:.2f}", (indiff_lower + x_shift, l1_intersect_min), fontsize=7.5)
+        plt.annotate(f"{l1_intersect_min:.2f}", (indiff_lower - x_shift, l1_intersect_min - y_shift), fontsize=7.5)
 
         plt.scatter(indiff_upper, l1_intersect_max, color="black", s=25, zorder=3)
-        plt.annotate(f"{l1_intersect_max:.2f}", (indiff_upper + x_shift, l1_intersect_max), fontsize=7.5)
+        plt.annotate(f"{l1_intersect_max:.2f}", (indiff_upper - x_shift, l1_intersect_max - y_shift), fontsize=7.5)
 
         self._add_axes(x, "Score")
         plt.xticks(self.df[x])
@@ -337,7 +338,7 @@ class Visualizations:
 
         lines_legend = plt.legend(
             handles=legend_lines,
-            loc="upper right",
+            loc="upper left",
             title="RRF vs Best algorithm",
             title_fontproperties={"weight": "bold", "size": 9},
             alignment="left",
@@ -345,12 +346,13 @@ class Visualizations:
         )
         plt.legend(
             handles=legend_patches,
-            loc="lower right",
+            loc="lower left",
             title="Statistical significance\n(p < 0.01)",
             title_fontproperties={"weight": "bold", "size": 9},
             alignment="left",
             fontsize=8.5,
         )
         plt.gca().add_artist(lines_legend)
+        plt.gca().invert_xaxis()
 
         self._save_image(file_name)
