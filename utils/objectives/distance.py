@@ -3,15 +3,25 @@ import statistics
 
 
 class Distance:
-    def __init__(self, rated: dict[int, list[int]], num_users: int):
+    def __init__(
+        self,
+        rated: dict[int, list[int]],
+        tags: dict[int, set[str]],
+        user_ratings: dict[int, list[int]],
+        num_users: int,
+    ):
         """
         Defines distance metrics for a given dataset.
 
         Args:
             rated (dict[int, list[int]]): A mapping of items to all the users that rated it.
+            tags (dict[int, set[str]]): A mapping of items to its genres.
+            user_ratings (dict[int, list[int]]): A mapping of users to their rated items.
             num_users (int): The total number of users in the dataset.
         """
         self.rated = rated
+        self.tags = tags
+        self.user_ratings = user_ratings
         self.num_users = num_users
 
 
@@ -45,6 +55,26 @@ class Distance:
         return scores_std
 
 
+    def by_tags(self, item_i: int, item_j: int) -> float:
+        """
+        Finds the distance between items based on tags.
+
+        Args:
+            item_i (int): The first item.
+            item_j (int): The second item.
+
+        Returns:
+            float: The distance between the two items.
+        """
+        item_i_tags = self.tags[item_i]
+        item_j_tags = self.tags[item_j]
+
+        similar_tags = item_i_tags & item_j_tags
+        all_tags = item_i_tags | item_j_tags
+        num_total_tags = max(len(all_tags), 1)
+        return 1 - (len(similar_tags) / num_total_tags)
+
+
     def by_rarity(self, item: int) -> float:
         """
         Finds the fraction of users who rated the item to determine how
@@ -58,3 +88,20 @@ class Distance:
             float: The novelty of the item.
         """
         return -math.log2(len(self.rated[item]) / self.num_users)
+
+
+    def by_surprise(self, user_id: int, item: int) -> float:
+        """
+        Finds the amount of surprise of an item being recommended.
+
+        Args:
+            user_id (int): The user.
+            item (int): The item.
+
+        Returns:
+            float: The surprise of the item.
+        """
+        return min(
+            self.by_tags(item, rated_item)
+            for rated_item in self.user_ratings[user_id]
+        )

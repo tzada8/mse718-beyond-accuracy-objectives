@@ -172,7 +172,7 @@ class RunFile(BaseFile):
         # Evaluate each user's recommendations within the run.
         metrics_df = self.df.groupby("user_id")["movie_id"].apply(
             lambda user_group: pd.DataFrame(
-                [getattr(Measures(user_group, k, distance), measure)()],
+                [getattr(Measures(user_group.name, user_group, k, distance), measure)()],
                 columns=["score"],
             ).assign(user_id=user_group.name)
         ).reset_index(drop=True)

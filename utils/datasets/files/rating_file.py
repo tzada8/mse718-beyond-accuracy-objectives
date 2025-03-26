@@ -37,3 +37,13 @@ class RatingFile(BaseFile):
             dict[int, list[int]]: Map of items to users who rated it.
         """
         return self.df.groupby("movie_id")["user_id"].apply(list).to_dict()
+
+
+    def user_ratings(self) -> dict[int, list[int]]:
+        """
+        Creates a mapping of each user to all the items they rated.
+
+        Returns:
+            dict[int, list[int]]: Map of users to items they rated.
+        """
+        return self.df.groupby("user_id")["movie_id"].apply(list).to_dict()
