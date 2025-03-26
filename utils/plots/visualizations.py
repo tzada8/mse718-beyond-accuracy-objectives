@@ -101,7 +101,7 @@ class Visualizations:
             file_name (str): The name of the file to be saved.
         """
         output_path = f"{self.output_dir}/{file_name}"
-        plt.savefig(output_path, bbox_inches="tight", dpi=300)
+        plt.savefig(output_path, bbox_inches="tight", dpi=1000)
         plt.close()
 
 

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Zada"
+  given-names: "Troy"
+title: "Diversity, Serendipity, and Novelty Impacting Human Preferences in Movie Recommendations"
+version: 2.0.4
+date-released: 2025-03-28
+url: "https://github.com/tzada8/mse718-beyond-accuracy-objectives"

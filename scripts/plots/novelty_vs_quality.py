@@ -33,7 +33,7 @@ def main(args):
 
     visualizations = Visualizations(results.df, args.output)
     visualizations.scatter_plot_labelled_points(
-        (5, 5),
+        (4, 4),
         improved_compat_col,
         improved_novelty_col,
         "algorithm",
