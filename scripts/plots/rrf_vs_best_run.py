@@ -33,7 +33,7 @@ def main(args):
 
     visualizations = Visualizations(results.df, args.output)
     visualizations.line_plot_improvement(
-        (9, 5),
+        (5, 4),
         "RRF tradeoff",
         "novelty",
         "compatibility",

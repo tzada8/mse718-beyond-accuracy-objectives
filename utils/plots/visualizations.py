@@ -340,17 +340,17 @@ class Visualizations:
             handles=legend_lines,
             loc="upper left",
             title="RRF vs Best algorithm",
-            title_fontproperties={"weight": "bold", "size": 9},
+            title_fontproperties={"weight": "bold", "size": 7},
             alignment="left",
-            fontsize=8.5,
+            fontsize=6.5,
         )
         plt.legend(
             handles=legend_patches,
             loc="lower left",
             title="Statistical significance\n(p < 0.01)",
-            title_fontproperties={"weight": "bold", "size": 9},
+            title_fontproperties={"weight": "bold", "size": 7},
             alignment="left",
-            fontsize=8.5,
+            fontsize=6.5,
         )
         plt.gca().add_artist(lines_legend)
         plt.gca().invert_xaxis()
