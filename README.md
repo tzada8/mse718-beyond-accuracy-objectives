@@ -1,6 +1,6 @@
-# MSE 718: Novelty Impacting Human Preferences in Movie Recommendations
+# MSE 718: Diversity, Serendipity, and Novelty Impacting Human Preferences in Movie Recommendations
 
-The purpose of this research is to better understand how novelty/familiarity impacts human interests in the field of movie recommendations.
+The purpose of this research is to better understand how diversity, serendipity, and novelty impact human interests in the field of movie recommendations.
 
 ## Getting Started
 
@@ -86,8 +86,12 @@ Note that all scripts should be run from the root directory.
     ```
     python -m scripts.evaluation.run_metrics_varying_tradeoffs --runs results/runs_reranked --input data/ratings.csv --users data/user_ids.txt --output results/metrics --metric novelty --k 100
     ```
+3. The following script evaluates the diversity or serendipity of each run's recommendations
+    ```
+    python -m scripts.plots.objective_vs_quality --objective results/metrics/diversity.txt --quality results/metrics/compatibility/p2_cranfield_k_100_tradeoff_10.txt --output results/plots/objectives --measure diversity
+    ```
 
-3. The following script combines the quality and novelty scores for plotting
+4. The following script combines the quality and novelty scores for plotting
     ```
     python -m scripts.evaluation.combine_results --metric_dir results/metrics/novelty --quality_dir results/metrics/compatibility --output results/metrics/combined_interest.txt --qrel interest --measure novelty --quality compatibility-98
     ```
@@ -99,12 +103,17 @@ Note that all scripts should be run from the root directory.
     python -m scripts.plots.novelty_vs_quality --input results/metrics/combined_interest.txt --output results/plots
     ```
 
-2. The following script plots the RRF run to the best run to determine amount of possible novelty improvement
+2. The following script plots the relationship between relevance and diversity/serendipity
+    ```
+    python -m scripts.plots.objective_vs_quality --objective results/metrics/diversity.txt --quality results/metrics/compatibility/p2_cranfield_k_100_tradeoff_10.txt --output results/plots/objectives --measure diversity
+    ```
+
+3. The following script plots the RRF run to the best run to determine amount of possible novelty improvement
     ```
     python -m scripts.plots.rrf_vs_best_run --input results/metrics/combined_interest.txt --output results/plots
     ```
 
-3. The following script compares the best run to varying RRF tradeoffs to determine the significance distribution
+4. The following script compares the best run to varying RRF tradeoffs to determine the significance distribution
     ```
     python -m scripts.plots.rrf_significance --best_run results/metrics/compatibility/p2_cranfield_k_100_tradeoff_08.txt --rrf results/metrics/rrf-101/compatibility --output results/plots/rrf-101/rrf_significance.txt --metric compatibility-98
     ```
