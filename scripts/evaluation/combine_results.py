@@ -23,7 +23,7 @@ fields = {
 
 
 def decode_file_name(file_name: str) -> str:
-    match = re.search(r"_(\d{2,3})\.txt$", file_name)
+    match = re.search(r"-(\d{2,3})\.txt$", file_name)
     if match:
         str_num = str(match.group(1))
         decimal = int(str_num) / (10 ** (len(str_num) - 1))

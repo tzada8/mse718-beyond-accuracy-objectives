@@ -24,7 +24,7 @@ fields = {
 
 def main(args):
     rating_file = RatingFile(args.input)
-    distance = Distance(rating_file.items_rated(), rating_file.num_users)
+    distance = Distance(rating_file.items_rated(), {}, {}, rating_file.num_users)
 
     user_ids = UserIdsFile(args.users).user_ids
 
